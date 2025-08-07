@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="kn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ಪದ ವಿನೋದ - Kannada Wordle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <h1 class="header-title font-kannada" style="color: hsl(258 90% 65%);">ಪದ ವಿನೋದ</h1>
+                <div id="currentDateDisplay" class="date-display" style="display: none;">
+                    Today
+                </div>
+            </div>
+            <div class="header-controls">
+                <button id="helpBtn" class="header-btn" title="Help">?</button>
+                <button id="historyBtn" class="header-btn" title="History">📅</button>
+                <button id="hintBtn" class="header-btn" title="Hint">💡</button>
+                <button id="newGameBtn" class="header-btn" title="New Game">🔄</button>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <div class="input-row">
+                <input 
+                    type="text" 
+                    id="englishInput"
+                    class="input-field"
+                    placeholder="Type in English eg:sarigama..."
+                    autocomplete="off"
+                    autocapitalize="off"
+                />
+                <div id="kannadaPreview" class="preview-area font-kannada">
+                    <span style="color: hsl(215 13% 44%);">Kannada preview...</span>
+                </div>
+            </div>
+            <button id="submitBtn" class="btn" disabled>Submit Guess</button>
+        </div>
+        
+        <div id="gameGrid" class="game-grid">
+            <!-- 40 tiles for 10 rows × 4 columns -->
+        </div>
+        
+        <div id="gameStatus" class="game-status"></div>
+        
+        <!-- Easter Egg Display -->
+        <div id="easterEgg" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: hsl(258 96% 8%); border: 2px solid hsl(258 90% 65%); border-radius: 12px; padding: 2rem; text-align: center; z-index: 1000;">
+            <p style="margin-bottom: 1rem;">First syllable hint:</p>
+            <div class="font-kannada" style="font-size: 2rem; color: hsl(258 90% 65%);"></div>
+        </div>
+        
+        <!-- Help Modal -->
+        <div id="helpModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title font-kannada">ಸಹಾಯ - Help</h2>
+                    <button class="close">&times;</button>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 1rem;">How to Play:</h3>
+                    <p style="margin-bottom: 1rem;">Guess the 4-syllable Kannada word in 10 tries. Type in English and see the Kannada transliteration.</p>
+                    
+                    <h3 style="margin-bottom: 1rem;">Color Meanings:</h3>
+                    <div style="display: grid; gap: 0.5rem; font-size: 0.875rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 20px; height: 20px; background: hsl(142 76% 36%); border-radius: 4px;"></div>
+                                <span><strong style="color: hsl(142 76% 50%);">GREEN:</strong> Correct syllable in correct position</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 20px; height: 20px; background: hsl(48 96% 53%); border-radius: 4px;"></div>
+                                <span><strong style="color: hsl(48 96% 60%);">YELLOW:</strong> Correct syllable, wrong position</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 20px; height: 20px; background: hsl(327 73% 73%); border-radius: 4px;"></div>
+                                <span><strong style="color: hsl(327 73% 80%);">PINK:</strong> Cons & Pos OK, wrong gunintam</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 20px; height: 20px; background: hsl(271 91% 65%); border-radius: 4px;"></div>
+                                <span><strong style="color: hsl(271 91% 75%);">PURPLE:</strong> Cons & Pos OK, wrong samyuk</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 20px; height: 20px; background: hsl(199 89% 72%); border-radius: 4px;"></div>
+                                <span><strong style="color: hsl(199 89% 80%);">BLUE:</strong> Cons OK, gunintam & Pos Wrong</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 20px; height: 20px; background: hsl(0 30% 50%); border-radius: 4px;"></div>
+                                <span><strong style="color: hsl(10 20% 50%);">BROWN:</strong> Cons OK, samyuk & Pos Wrong</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <div style="width: 20px; height: 20px; background: hsl(215 13% 37%); border-radius: 4px;"></div>
+                                <span><strong style="color: hsl(215 13% 44%);">GRAY:</strong> Not in word</span>								
+                            </div>
+							<div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span>Cons-Consonant; samyuk-Samyuktakshara; Pos-Position</span>								
+                            </div>
+                    </div>
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="color: hsl(199 89% 72%); margin-bottom: 0.5rem;">Tips:</h3>
+                        <ul style="font-size: 0.875rem; padding-left: 1rem;">
+                            <li>Type in English for Telugu syllables - "sarigama" for "సరిగమ" </li>
+							<li>First char uppercase suppressed. Space before will override it. </li>
+                            <li>Use 💡 Hint Icon for word meaning</li>
+							<li>(You should solve atleast one syllable to avail hint)</li>
+                            <li>Each guess must be exactly 4 syllables</li>
+							<li>Click 📅 Calendar Icon for Past 6 Puzzles</li>
+                        </ul>
+                    </div>
+					<!--
+                    <h3 style="margin: 1rem 0;">Examples:</h3>
+                    <p style="font-size: 0.875rem;">namaste → ನಮಸ್ತೆ</p>
+                    <p style="font-size: 0.875rem;">gamanisu → ಗಮನಿಸು</p>
+                    <p style="font-size: 0.875rem;">parimala → ಪರಿಮಳ</p> -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- History Modal -->
+        <div id="historyModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title font-kannada">ಇತಿಹಾಸ - History</h2>
+                    <button class="close">&times;</button>
+                </div>
+                <div>
+                    <p style="margin-bottom: 1rem;">Select a recent date to play that day's word:</p>
+                    <div id="dateButtons" style="display: grid; gap: 0.5rem; margin-bottom: 1rem;">
+                        <!-- Past 6 days will be populated here -->
+                    </div>
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid hsl(258 40% 12%);">
+                        <p style="font-size: 0.875rem; margin-bottom: 0.5rem;">Or select custom date:</p>
+                        <input type="date" id="dateSelector" style="padding: 0.5rem; border-radius: 4px; border: 1px solid hsl(258 40% 12%); background: hsl(258 96% 6%); color: white; width: 100%;">
+                        <button id="loadDateBtn" class="btn" style="margin-top: 0.5rem;">Load Date</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
