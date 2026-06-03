@@ -263,7 +263,7 @@
         }
 
         // STRDT mechanism like Telugu Wordle - change this to pick specific words
-        const STRDT = 46177; // Start date reference - change this to select different words
+        const STRDT = 46175; // Start date reference - change this to select different words
         
         // Get word of the day using STRDT mechanism like Telugu Wordle
         function getWordOfDay() {
